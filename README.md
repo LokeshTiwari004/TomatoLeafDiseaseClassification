@@ -19,7 +19,7 @@ This work adopts transfer learning with a pretrained ResNet-50 (He et al., 2016)
 - **Warm-up + cosine decay:** AdamW (Loshchilov & Hutter, 2017) is optimised with linear warm-up over 15% of training steps followed by cosine annealing (Loshchilov & Hutter, 2016) to improve early stability.
 - **Domain-appropriate augmentation:** Training samples use colour jitter, horizontal/vertical flips, and random rotations (±15°) to promote pose and illumination invariance without obscuring disease cues (Shorten & Khoshgoftaar, 2019). Validation and test samples use only dtype scaling and ImageNet normalisation.
 - **Leakage prevention:** `StratifiedGroupKFold` grouped by `leaf_id` preserves class stratification while ensuring all images from a given physical leaf remain in the same fold (Pedregosa et al., 2011).
-- **Macro-F1–based selection:** Macro-averaged F1 (Sokolova & Lapalme, 2009) is used for checkpointing to weight all classes equally. Per-class F1 and out-of-fold (OOF) macro-F1 (mean ± SD) are reported across all folds.
+- **Imbalance-aware evaluation:** Validation macro-F1 is used to select the best checkpoint per fold. Test performance is reported in two forms: (i) the mean ± standard deviation of fold-level test macro-F1 across all folds, and (ii) the out-of-fold (OOF) macro-F1 and per-class OOF F1, computed by pooling test predictions from all folds to yield exactly one prediction per image under a non-overlapping, exhaustive set of test partitions.
 
 ### References
 
@@ -62,7 +62,7 @@ kaggle-secrets  # only if running on Kaggle
 
 ## Results
 
-Final evaluation reports the test macro-F1 (mean ± SD) across folds and per-class OOF F1 at the end of the notebook.
+Final evaluation reports (i) the fold-level test macro-F1, summarised as the mean ± standard deviation across folds, and (ii) the out-of-fold (OOF) macro-F1 and per-class OOF F1, obtained by aggregating test predictions across all folds to give exactly one prediction per image over a non-overlapping, exhaustive test partition.
 
 ## Citation
 
